@@ -89,7 +89,7 @@ class MailThread(models.AbstractModel):
         except AttributeError:
             # Using extract_msg < 0.24.4
             message_id = message_msg.message_id
-        msg_body = message_msg.getStream("__substg1.0_10130102") or message_msg.body
+        msg_body = message_msg.htmlBody or message_msg.body
         subtype = (
             lxml.html.fromstring(msg_body).find(".//*") is not None
             and "html"
@@ -105,7 +105,7 @@ class MailThread(models.AbstractModel):
             email_cc=message_msg.cc,
             message_id=message_id,
             attachments=[
-                (attachment.longFilename, attachment.data)
+                (attachment.longFilename, attachment.data, attachment.mimetype)
                 for attachment in message_msg.attachments
             ],
             subtype=subtype,
